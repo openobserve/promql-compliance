@@ -2,9 +2,18 @@ global:
   scrape_interval: 5s
 
 scrape_configs:
-- job_name: 'demo'
-  static_configs:
-    - targets:
-      - 'demo.promlabs.com:10000'
-      - 'demo.promlabs.com:10001'
-      - 'demo.promlabs.com:10002'
+  - job_name: "demo"
+    static_configs:
+      - targets:
+          - "demo.promlabs.com:10000"
+          - "demo.promlabs.com:10001"
+          - "demo.promlabs.com:10002"
+
+remote_write:
+  - url: http://host.docker.internal:5080/api/default/prometheus/api/v1/write
+    remote_timeout: "30s"
+    send_exemplars: false
+    follow_redirects: true
+    basic_auth:
+      username: root@example.com
+      password: Complexpass#123

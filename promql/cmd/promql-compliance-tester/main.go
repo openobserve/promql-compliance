@@ -111,7 +111,15 @@ func main() {
 		log.Fatalf("Error creating test API: %v", err)
 	}
 
-	comp := comparer.New(refAPI, testAPI, cfg.QueryTweaks)
+	// Parse query mode from config
+	queryMode := comparer.RangeQuery // default
+	if cfg.QueryMode == "instant" {
+		queryMode = comparer.InstantQuery
+	} else if cfg.QueryMode == "range" || cfg.QueryMode == "" {
+		queryMode = comparer.RangeQuery
+	}
+
+	comp := comparer.New(refAPI, testAPI, cfg.QueryTweaks, queryMode)
 
 	end := getTime(cfg.QueryTimeParameters.EndTime, time.Now().UTC().Add(-12*time.Minute))
 	start := end.Add(

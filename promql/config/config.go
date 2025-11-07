@@ -16,6 +16,7 @@ type Config struct {
 	QueryTweaks           []*QueryTweak       `yaml:"query_tweaks"`
 	TestCases             []*TestCase         `yaml:"test_cases"`
 	QueryTimeParameters   QueryTimeParameters `yaml:"query_time_parameters"`
+	QueryMode             string              `yaml:"query_mode,omitempty"` // "instant" or "range", defaults to "range" if not specified
 }
 
 type QueryTimeParameters struct {

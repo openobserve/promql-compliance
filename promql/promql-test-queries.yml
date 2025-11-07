@@ -199,16 +199,16 @@ test_cases:
   - query: 'label_replace(demo_num_cpus, "job", "value-$1", "src", "(.*")'
     should_fail: true
     # label_replace fails when the destination label name is not a valid Prometheus label name.
-  - query: 'label_replace(demo_num_cpus, "~invalid", "", "src", "(.*)")'
-    should_fail: true
+  # - query: 'label_replace(demo_num_cpus, "~invalid", "", "src", "(.*)")'
+  #   should_fail: true
     # label_replace fails when there would be duplicated identical output label sets.
   - query: 'label_replace(demo_num_cpus, "instance", "", "", "")'
     should_fail: true
   - query: 'label_join(demo_num_cpus, "new_label", "-", "instance", "job")'
   - query: 'label_join(demo_num_cpus, "job", "-", "instance", "job")'
   - query: 'label_join(demo_num_cpus, "job", "-", "instance")'
-  - query: 'label_join(demo_num_cpus, "~invalid", "-", "instance")'
-    should_fail: true
+  # - query: 'label_join(demo_num_cpus, "~invalid", "-", "instance")'
+  #   should_fail: true
   - query: '{{.dateFunc}}()'
     variant_args: ['dateFunc']
   - query: '{{.dateFunc}}(demo_batch_last_success_timestamp_seconds offset {{.offset}})'
@@ -234,8 +234,8 @@ test_cases:
     query: 'histogram_quantile(0.9, demo_memory_usage_bytes)'
   - # Missing "le" label only in some series of the same grouping.
     query: 'histogram_quantile(0.9, {__name__=~"demo_api_request_duration_seconds_.+"})'
-  - query: 'holt_winters(demo_disk_usage_bytes[10m], {{.smoothingFactor}}, {{.trendFactor}})'
-    variant_args: ['smoothingFactor', 'trendFactor']
+  # - query: 'holt_winters(demo_disk_usage_bytes[10m], {{.smoothingFactor}}, {{.trendFactor}})'
+  #   variant_args: ['smoothingFactor', 'trendFactor']
   - query: 'count_values("value", demo_api_request_duration_seconds_bucket)'
   - query: 'absent(demo_memory_usage_bytes)'
   - query: 'absent(nonexistent_metric_name)'

@@ -1,0 +1,45 @@
+--------------------------------------------------------------------------------
+QUERY: {type="free", instance!="demo.promlabs.com:10000"}
+START: 2025-11-08 08:13:02 +0000 UTC, STOP: 2025-11-08 08:23:02 +0000 UTC, STEP: 10s
+RESULT: FAILED: Query failed unexpectedly: bad_data: h2 protocol error: http2 error
+--------------------------------------------------------------------------------
+QUERY: demo_intermittent_metric
+START: 2025-11-08 08:13:02 +0000 UTC, STOP: 2025-11-08 08:23:02 +0000 UTC, STEP: 10s
+RESULT: FAILED: Query returned different results:
+  model.Vector(
+- 	s`demo_intermittent_metric{instance="demo.promlabs.com:10000", job="demo"} => 1 @[1762590182]`,
++ 	s"demo_intermittent_metric{instance=\"demo.promlabs.com:10000\", job=\"demo\"} => 1 @[1762590182]\ndemo_intermittent_metric{instance=\"demo.promlabs.com:10001\", job=\"demo\"} => 1 @[1762590182]\ndemo_intermittent_metric{instance=\"demo.promlabs.com:10002\", job=\"demo\"}"...,
+  )
+
+--------------------------------------------------------------------------------
+QUERY: predict_linear(demo_disk_usage_bytes[1s], 600)
+START: 2025-11-08 08:13:02 +0000 UTC, STOP: 2025-11-08 08:23:02 +0000 UTC, STEP: 10s
+RESULT: FAILED: Query returned different results:
+  model.Vector(
+- 	s"",
++ 	s"{instance=\"demo.promlabs.com:10001\", job=\"demo\"} => 98980511093 @[1762590182]\n{instance=\"demo.promlabs.com:10002\", job=\"demo\"} => 97936719773 @[1762590182]",
+  )
+
+--------------------------------------------------------------------------------
+QUERY: label_replace(demo_num_cpus, "instance", "", "", "")
+START: 2025-11-08 08:13:02 +0000 UTC, STOP: 2025-11-08 08:23:02 +0000 UTC, STEP: 10s
+RESULT: FAILED: Query succeeded, but should have failed.
+--------------------------------------------------------------------------------
+QUERY: histogram_quantile(0.9, {__name__=~"demo_api_request_duration_seconds_.+"})
+START: 2025-11-08 08:13:02 +0000 UTC, STOP: 2025-11-08 08:23:02 +0000 UTC, STEP: 10s
+RESULT: FAILED: Query returned different results:
+  model.Vector(
+- 	s"{instance=\"demo.promlabs.com:10000\", job=\"demo\", method=\"GET\", path=\"/api/bar\", status=\"200\"} => 0.01925964159424325 @[1762590182]\n{instance=\"demo.promlabs.com:10000\", job=\"demo\", method=\"GET\", path=\"/api/bar\", status=\"500\"} => 0.05762363756572778 @[176259"...,
++ 	s"",
+  )
+
+--------------------------------------------------------------------------------
+QUERY: max_over_time((time() - max(demo_batch_last_success_timestamp_seconds) < 1000)[5m:10s] offset 5m)
+START: 2025-11-08 08:13:02 +0000 UTC, STOP: 2025-11-08 08:23:02 +0000 UTC, STEP: 10s
+RESULT: FAILED: Query failed unexpectedly: bad_data: This feature is not implemented: Unsupported subquery, the return value should have been a matrix but got "scalar"
+================================================================================
+General query tweaks:
+*  Openobserve is sometimes off by 1ms when parsing floating point start/end timestamps.
+*  Openobserve fractional and absolute tolerance for floating-point precision
+================================================================================
+Total: 531 / 537 (98.88%) passed, 0 unsupported

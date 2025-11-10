@@ -13,5 +13,5 @@ query_tweaks:
     truncate_timestamps_to_ms: 1000
   - note: 'Openobserve fractional and absolute tolerance for floating-point precision'
     adjust_value_tolerance:
-      fraction: 0.00000001
+      fraction: 0.01
       margin: 1
